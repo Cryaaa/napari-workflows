@@ -1,0 +1,10 @@
+!!python/object:napari_workflows._workflow.Workflow
+_tasks:
+  binarization: !!python/tuple
+  - !!python/name:__main__.threshold ''
+  - blurring
+  - 128
+  blurring: !!python/tuple
+  - !!python/name:__main__.blur ''
+  - input
+  - 5
