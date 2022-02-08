@@ -1,22 +1,22 @@
 !!python/object:napari_workflows._workflow.Workflow
 _tasks:
+  Result of Connected component labeling (scikit-image, nsbatwm): !!python/tuple
+  - !!python/name:napari_segment_blobs_and_things_with_membranes.connected_component_labeling ''
+  - Result of Expand labels (scikit-image, nsbatwm)
+  - false
+  Result of Expand labels (scikit-image, nsbatwm): !!python/tuple
+  - !!python/name:napari_segment_blobs_and_things_with_membranes.expand_labels ''
+  - Result of Threshold (Li et al 1993, scikit-image, nsbatwm)
+  - 4.0
   Result of Gaussian (scikit-image, nsbatwm): !!python/tuple
   - !!python/name:napari_segment_blobs_and_things_with_membranes.gaussian_blur ''
   - blobs
-  - 6.0
+  - 4.0
   Result of Percentile (scipy, nsbatwm): !!python/tuple
   - !!python/name:napari_segment_blobs_and_things_with_membranes.percentile_filter ''
   - Result of Gaussian (scikit-image, nsbatwm)
-  - 6.0
-  - 9.0
-  Result of Remove labeled objects at the image border (scikit-image, nsbatwm): !!python/tuple
-  - !!python/name:napari_segment_blobs_and_things_with_membranes.remove_labels_on_edges ''
-  - Result of Seeded watershed using local minima as seeds (nsbatwm)
-  Result of Seeded watershed using local minima as seeds (nsbatwm): !!python/tuple
-  - !!python/name:napari_segment_blobs_and_things_with_membranes.local_minima_seeded_watershed ''
-  - Result of Threshold (Ridler et al 1978, scikit-image, nsbatwm)
-  - 5.0
-  - 6.0
-  Result of Threshold (Ridler et al 1978, scikit-image, nsbatwm): !!python/tuple
-  - !!python/name:napari_segment_blobs_and_things_with_membranes.threshold_mean ''
+  - 2.0
+  - 4.0
+  Result of Threshold (Li et al 1993, scikit-image, nsbatwm): !!python/tuple
+  - !!python/name:napari_segment_blobs_and_things_with_membranes.threshold_li ''
   - Result of Percentile (scipy, nsbatwm)
