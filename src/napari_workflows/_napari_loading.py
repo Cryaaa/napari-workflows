@@ -171,6 +171,6 @@ def get_parameter_options(workflow, wf_step: str, viewer, old_wf_names_to_new_ma
 
     param_options = {}
     for key, name in image_keywords:
-        param_options[key] = {'choices': [viewer.layers[conversion_dict[name]]]}
+        param_options[key] = {'choices': [viewer.layers[conversion_dict[name]].data]}
 
     return param_options
