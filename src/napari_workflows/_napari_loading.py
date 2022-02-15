@@ -3,18 +3,19 @@ from functools import partial
 from napari_workflows import Workflow
 from magicgui.widgets import FunctionGui
 from functools import wraps
+from napari.utils._magicgui import _make_choice_data_setter
 
 class flexible_gui(FunctionGui):
-    def __init__(self,function,param_options):
+    def __init__(self,function,param_options = {}):
         super().__init__(
           function,
           call_button=True,
           layout='vertical',
-          #auto_call=True,
+          auto_call=True,
           param_options=param_options
         )
 
-def make_flexible_gui(func, param_options, viewer):
+def make_flexible_gui(func, viewer, param_options = {}):
     gui = None
 
     from napari.types import ImageData, LabelsData
@@ -64,6 +65,7 @@ def make_flexible_gui(func, param_options, viewer):
 
     gui = flexible_gui(worker_func, param_options)
     return gui
+
 
 def signature_w_kwargs_from_function(function, arg_vals: list) -> Signature:
     """
@@ -132,30 +134,22 @@ def old_wf_names_to_new_mapping(workflow: Workflow)-> dict:
     mapping = {}
     for old_key, content in workflow._tasks.items():
         func = content[0]
-        new_name = 'Result of ' + func.__name__
+        new_name = func.__name__ + ' result'
         mapping[old_key] = new_name
     
     return mapping
         
-def get_parameter_options(workflow, wf_step: str, viewer, old_wf_names_to_new_mapping = None):
-    """
-    Returns a parameter options that can be handed to the flexible_gui class in order to
-    only allow the correct dropdown options
+def get_layers_data_of_name(layer_name: str, viewer, gui):
 
-    Parameters
-    ----------
-    workflow: 
-        napari_workflows Workflow class
+    choices = []
+    for layer in [x for x in viewer.layers if str(x) == layer_name]:
+        choice_key = f'{layer.name} (data)'
+        choices.append((choice_key, layer.data))
+        layer.events.data.connect(_make_choice_data_setter(gui, choice_key))
 
-    wf_step: str
-        Name of workflow step for which the parameter options should be generated
-    
-    viewer:
-        napari Viewer instance
+    return choices
 
-    old_wf_names_to_new_mapping:
-        dictionary mapping old workflow step names to new ones
-    """
+def set_choices(workflow, wf_step: str, viewer, widget, old_wf_names_to_new_mapping = None):
 
     func = workflow._tasks[wf_step][0]
     args = workflow._tasks[wf_step][1:]
@@ -169,8 +163,6 @@ def get_parameter_options(workflow, wf_step: str, viewer, old_wf_names_to_new_ma
     else:
         conversion_dict = old_wf_names_to_new_mapping
 
-    param_options = {}
+    
     for key, name in image_keywords:
-        param_options[key] = {'choices': [viewer.layers[conversion_dict[name]].data]}
-
-    return param_options
+        widget[key].choices = get_layers_data_of_name(conversion_dict[name], viewer, widget[key])
