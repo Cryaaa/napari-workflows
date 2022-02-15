@@ -6,16 +6,16 @@ from functools import wraps
 from napari.utils._magicgui import _make_choice_data_setter
 
 class flexible_gui(FunctionGui):
-    def __init__(self,function,param_options = {}):
+    def __init__(self,function,param_options = {}, autocall = True):
         super().__init__(
           function,
           call_button=True,
           layout='vertical',
-          auto_call=True,
+          auto_call=autocall,
           param_options=param_options
         )
 
-def make_flexible_gui(func, viewer, param_options = {}):
+def make_flexible_gui(func, viewer, param_options = {}, autocall = True):
     gui = None
 
     from napari.types import ImageData, LabelsData
@@ -63,7 +63,7 @@ def make_flexible_gui(func, viewer, param_options = {}):
         else:
             return data
 
-    gui = flexible_gui(worker_func, param_options)
+    gui = flexible_gui(worker_func, param_options, autocall)
     return gui
 
 
