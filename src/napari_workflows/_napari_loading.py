@@ -138,7 +138,7 @@ def old_wf_names_to_new_mapping(workflow: Workflow)-> dict:
         mapping[old_key] = new_name
     
     return mapping
-        
+
 def get_layers_data_of_name(layer_name: str, viewer, gui):
 
     choices = []
