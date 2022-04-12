@@ -44,7 +44,7 @@ class Workflow():
             self._tasks[name] = func_or_data
             return
 
-        # determine defaul parameters and apply them
+        # determine default parameters and apply them
         sig = inspect.signature(func_or_data)
         bound = sig.bind(*args, **kwargs)
         bound.apply_defaults()
