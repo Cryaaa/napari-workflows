@@ -657,7 +657,7 @@ def _layer_invalid(layer):
 
 
 # todo: this function should live in napari-time-slicer
-def _break_down_4d_to_2d_kwargs(arguments, current_timepoint, viewer):
+def _break_down_4d_to_2d_kwargs(arguments, current_timepoint = None, viewer=None):
     """
     Goes through a dictionary of arguments and identifies image data arguments with 4 dimensions.
     If there is any layer in the viewer where layer.data corresponds to this image, it assumes that
@@ -679,17 +679,22 @@ def _break_down_4d_to_2d_kwargs(arguments, current_timepoint, viewer):
         if isinstance(value, np.ndarray) or str(type(value)) in ["<class 'cupy._core.core.ndarray'>",
                                                                  "<class 'dask.array.core.Array'>"]:
             if len(value.shape) == 4:
-                layer = _get_layer_from_data(viewer, value)
-                new_value = value[current_timepoint]
+                layer = None
+                if viewer:
+                    layer = _get_layer_from_data(viewer, value)
+                if value.shape[0] == 1:
+                    new_value = value[0]
                 if new_value.shape[0] == 1:
                     new_value = new_value[0]
+                if current_timepoint:
+                    new_value = value[current_timepoint]
                 arguments[key] = new_value
                 if layer is not None:
                     layer.metadata[CURRENT_TIME_FRAME_DATA] = new_value
 
 
 # todo: this function should live in napari-time-slicer
-def _break_down_4d_to_2d_args(arguments, current_timepoint, viewer):
+def _break_down_4d_to_2d_args(arguments, current_timepoint = None, viewer=None):
     """
         Goes through a list of arguments and identifies image data arguments with 4 dimensions.
         If there is any layer in the viewer where layer.data corresponds to this image, it assumes that
@@ -711,12 +716,18 @@ def _break_down_4d_to_2d_args(arguments, current_timepoint, viewer):
         value = arguments[i]
         if is_image(value):
             if len(value.shape) == 4:
-                layer = _get_layer_from_data(viewer, value)
-                new_value = value[current_timepoint]
+                layer = None
+                if viewer:
+                    layer = _get_layer_from_data(viewer, value)
+                if value.shape[0] == 1:
+                    new_value = value[0]
+                if current_timepoint:
+                    new_value = value[current_timepoint]
                 if new_value.shape[0] == 1:
                     new_value = new_value[0]
                 arguments[i] = new_value
-                layer.metadata[CURRENT_TIME_FRAME_DATA] = new_value
+                if layer is not None:
+                    layer.metadata[CURRENT_TIME_FRAME_DATA] = new_value
 
 def is_image(something):
     return hasattr(something, "dtype") and hasattr(something, "shape")
